@@ -10,6 +10,7 @@
 #   - ドングルなしの左（cornix_left）に CONFIG_ZMK_POINTING を足し（しろ の keymap がホイール・中クリックを使う）、
 #     左右の接続間隔を 7.5ms に戻した（下の注）
 #   - 作るものを しろ に要るものだけにした
+#   - 左右とも深い眠り（deep sleep）を切った（-DCONFIG_ZMK_SLEEP=n）。公式ファームと同じく「つないだまま」にする（2026-11-10 久米と決定）
 ---
 include:
   # ---- ドングル構成（本命）：左右とも無線で XIAO へ、XIAO を PC に USB ----
@@ -20,10 +21,12 @@ include:
 
   - board: cornix_ph_left
     shield: cornix_indicator
+    cmake-args: -DCONFIG_ZMK_SLEEP=n
     artifact-name: shiro_left_for_dongle
 
   - board: cornix_right
     shield: cornix_indicator
+    cmake-args: -DCONFIG_ZMK_SLEEP=n
     artifact-name: shiro_right
 
   # ---- ドングルなし（XIAO が届く前に ZMK だけ試すとき：左は今と同じ USB 有線）----
@@ -32,7 +35,7 @@ include:
   #   (5+1)×7.5ms＝45ms ごとに必ず同期する作りは zhenlonghe 版と同じ（ドングルの設定と同じ値）
   - board: cornix_left
     shield: cornix_indicator
-    cmake-args: -DCONFIG_ZMK_POINTING=y -DCONFIG_ZMK_SPLIT_BLE_PREF_INT=6 -DCONFIG_ZMK_SPLIT_BLE_PREF_LATENCY=5
+    cmake-args: -DCONFIG_ZMK_POINTING=y -DCONFIG_ZMK_SPLIT_BLE_PREF_INT=6 -DCONFIG_ZMK_SPLIT_BLE_PREF_LATENCY=5 -DCONFIG_ZMK_SLEEP=n
     artifact-name: shiro_left_central_usb
   # 右は上の shiro_right をそのまま使う（ドングルあり・なしで同じ）
 
@@ -40,10 +43,11 @@ include:
   #   cornix_indicator を外すと、LED・切断からの立ち直り・フリーズ時の再起動（独自の C のコード約1,200行）が入らない。
   #   残るのは基板の定義と無線の設定（時計の補正・+8dBm・1M PHY・接続間隔）だけ。独自のコードが怪しいときに入れ替える
   - board: cornix_left
-    cmake-args: -DCONFIG_ZMK_POINTING=y -DCONFIG_ZMK_SPLIT_BLE_PREF_INT=6 -DCONFIG_ZMK_SPLIT_BLE_PREF_LATENCY=5
+    cmake-args: -DCONFIG_ZMK_POINTING=y -DCONFIG_ZMK_SPLIT_BLE_PREF_INT=6 -DCONFIG_ZMK_SPLIT_BLE_PREF_LATENCY=5 -DCONFIG_ZMK_SLEEP=n
     artifact-name: shiro_left_central_usb_plain
 
   - board: cornix_right
+    cmake-args: -DCONFIG_ZMK_SLEEP=n
     artifact-name: shiro_right_plain
 
   # ---- 設定の消去（役割を替えるとき・元に戻すときに、必ず先に入れる）----
