@@ -1,52 +1,60 @@
-# This file generates the GitHub Actions matrix
-# For simple board + shield combinations, add them
-# to the top level board and shield arrays, for more
-# control, add individual board + shield combinations to
-# the `include` property, e.g:
+# しろ（Cornix LP）用の build.yaml ― 下書き（2026-11-10）
+# 使い方：zhenlonghe/zmk-keyboard-cornix を fork したリポジトリの build.yaml をこれに置き換える。
+# GitHub Actions がこの一覧の分だけ .uf2 を作る（Actions → いちばん新しい実行 → Artifacts の firmware.zip）。
 #
-# board: [ "nice_nano_v2" ]
-# shield: [ "corne_left", "corne_right" ]
-# include:
-#   - board: bdn9_rev2
-#   - board: nice_nano_v2
-#     shield: reviung41
-#
+# 元の zhenlonghe 版からの違い
+#   - ドングルを nice!nano＋画面 から Seeed XIAO nRF52840（画面なし）に替えた
+#       board は ZMK main での名前 xiao_ble//zmk（app/boards/seeed/xiao_ble/xiao_ble.zmk.yml の id）
+#       XIAO は買ったときの SoftDevice 入りの配置のまま使うので snippet nrf52840-nosd は付けない
+#       画面が無いので CONFIG_ZMK_DISPLAY を切る（cornix_dongle_adapter.conf が =y にしているため）
+#   - ドングルなしの左（cornix_left）に CONFIG_ZMK_POINTING を足し（しろ の keymap がホイール・中クリックを使う）、
+#     左右の接続間隔を 7.5ms に戻した（下の注）
+#   - 作るものを しろ に要るものだけにした
 ---
 include:
-  - board: nice_nano/nrf52840/zmk
-    shield: cornix_dongle_adapter cornix_dongle_eyelash dongle_display
-    snippet: nrf52840-nosd
-    artifact-name: cornix_dongle_nosd
-  # dongle screen not yet supports zephyr4
-  # - board: seeeduino_xiao_ble
-  #   shield: cornix_dongle_adapter dongle_screen
-  #   snippet: studio-rpc-usb-uart
-  #   artifact-name: cornix_dongle_zds_see
-  # - board: nice_nano
-  #   shield: cornix_dongle_adapter dongle_screen
-  #   snippet: studio-rpc-usb-uart
-  #   artifact-name: cornix_dongle_zds_nano
-  - board: cornix_left
-    shield: cornix_indicator
-    artifact-name: cornix_left_central_usb_ble_nosd
+  # ---- ドングル構成（本命）：左右とも無線で XIAO へ、XIAO を PC に USB ----
+  - board: xiao_ble//zmk
+    shield: cornix_dongle_adapter
+    cmake-args: -DCONFIG_ZMK_DISPLAY=n
+    artifact-name: shiro_dongle_xiao
 
   - board: cornix_ph_left
     shield: cornix_indicator
-    artifact-name: cornix_left_dongle_peripheral_nosd
+    artifact-name: shiro_left_for_dongle
 
   - board: cornix_right
     shield: cornix_indicator
-    artifact-name: cornix_right_peripheral_nosd
+    artifact-name: shiro_right
+
+  # ---- ドングルなし（XIAO が届く前に ZMK だけ試すとき：左は今と同じ USB 有線）----
+  #   zhenlonghe 版は電池のために左右の接続間隔を 11.25ms（PREF_INT=9・LATENCY=3）に伸ばしている。
+  #   しろ の左は USB 給電なので、右手の遅れが小さい 7.5ms（規格の下限）に戻す。
+  #   (5+1)×7.5ms＝45ms ごとに必ず同期する作りは zhenlonghe 版と同じ（ドングルの設定と同じ値）
+  - board: cornix_left
+    shield: cornix_indicator
+    cmake-args: -DCONFIG_ZMK_POINTING=y -DCONFIG_ZMK_SPLIT_BLE_PREF_INT=6 -DCONFIG_ZMK_SPLIT_BLE_PREF_LATENCY=5
+    artifact-name: shiro_left_central_usb
+  # 右は上の shiro_right をそのまま使う（ドングルあり・なしで同じ）
+
+  # ---- 控え：LED と zhenlonghe さん独自の立ち直りの仕組みを入れない版 ----
+  #   cornix_indicator を外すと、LED・切断からの立ち直り・フリーズ時の再起動（独自の C のコード約1,200行）が入らない。
+  #   残るのは基板の定義と無線の設定（時計の補正・+8dBm・1M PHY・接続間隔）だけ。独自のコードが怪しいときに入れ替える
+  - board: cornix_left
+    cmake-args: -DCONFIG_ZMK_POINTING=y -DCONFIG_ZMK_SPLIT_BLE_PREF_INT=6 -DCONFIG_ZMK_SPLIT_BLE_PREF_LATENCY=5
+    artifact-name: shiro_left_central_usb_plain
+
+  - board: cornix_right
+    artifact-name: shiro_right_plain
+
+  # ---- 設定の消去（役割を替えるとき・元に戻すときに、必ず先に入れる）----
+  - board: xiao_ble//zmk
+    shield: settings_reset
+    artifact-name: reset_xiao
 
   - board: cornix_left
     shield: settings_reset
-    artifact-name: cornix_left_settings_reset
+    artifact-name: reset_cornix_left      # 左は cornix_left でも cornix_ph_left でもこれで消す
 
   - board: cornix_right
     shield: settings_reset
-    artifact-name: cornix_right_settings_reset
-
-  - board: nice_nano/nrf52840/zmk
-    shield: settings_reset
-    snippet: nrf52840-nosd
-    artifact-name: reset_nicenano_nosd
+    artifact-name: reset_cornix_right

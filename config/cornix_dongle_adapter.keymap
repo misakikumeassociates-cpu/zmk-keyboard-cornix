@@ -1,0 +1,7 @@
+/*
+ * ドングル（XIAO＋shield cornix_dongle_adapter）にも、左右と同じ keymap を確実に入れるための1行。
+ * fork の config/ に cornix.keymap と並べて置く。
+ * ZMK は shield の名前の .keymap を config/ から探す（zmk.dev の Configuration Overview）。
+ * zhenlonghe 版のドングルがどこから keymap を拾っているかは確かめられなかったので、こちらで指定しておく。
+ */
+#include "cornix.keymap"
