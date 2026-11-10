@@ -8,9 +8,7 @@
  *   24 25 26 27 28 29 [30 31] 32 33 34 35 36 37     30＝左ノブ押し込み・31＝右ノブ押し込み
  *   38 39 40 41 42 43         44 45 46 47 48 49     41〜46＝親指
  *
- * レイヤの番号は Vial と違う（Winモードを 1 番に上げた）:
- *   0 もじ / 1 Winモード(旧5) / 2 すうじ・きごう(旧1) / 3 Fキー・BT(旧2) / 4 テンキー(旧3)
- *   5 へんしゅう(旧4) / 6 Winすうじ(旧6) / 7 BT(旧7) / 8 でんたく(旧9)
+ * レイヤ: 0 もじ / 1 すうじ・きごう / 2 Fキー・BT / 3 emacs / 4 でんたく / 5 よび1 / 6 よび2
  */
 
 #include <behaviors.dtsi>
@@ -70,68 +68,35 @@
             // Vial: [["down", "KC_LSHIFT"], ["tap", "KC_END"], ["up", "KC_LSHIFT"], ["tap", "KC_DELETE"]]
             bindings = <&macro_press &kp LSHFT>, <&macro_tap &kp END>, <&macro_release &kp LSHFT>, <&macro_tap &kp DEL>;
         };
-
-        m10: m10 {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            wait-ms = <20>;   // Vial の Tap Code Delay 20ms に合わせた
-            tap-ms = <20>;
-            // Vial: [["down", "DF(0)"], ["up", "DF(0)"], ["down", "USER00"], ["up", "USER00"]]
-            bindings = <&macro_tap &to 0>, <&macro_tap &bt BT_SEL 0>;
-        };
-
-        m11: m11 {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            wait-ms = <20>;   // Vial の Tap Code Delay 20ms に合わせた
-            tap-ms = <20>;
-            // Vial: [["down", "DF(5)"], ["up", "DF(5)"], ["down", "USER01"], ["up", "USER01"]]
-            bindings = <&macro_tap &to 1>, <&macro_tap &bt BT_SEL 1>;
-        };
     };
 
     keymap {
         compatible = "zmk,keymap";
 
         moji {
-            display-name = "moji";   // もじ
-            // Vial のレイヤ 0
+            display-name = "moji";   // もじ（元の Vial のレイヤ 0）
             bindings = <
                 &kp TAB         &kp Q           &kp W           &kp E           &kp R           &kp T                                           &kp Y           &kp U           &kp I           &kp O           &kp P           &kp BSPC
-                &mo 5           &kp A           &kp S           &kp D           &kp F           &kp G                                           &kp H           &kp J           &kp K           &kp L           &kp BSLH        &kp RET
-                &kp LSHFT       &kp Z           &kp X           &kp C           &kp V           &kp B           &kp C_PP        &none           &kp N           &kp M           &kp COMMA       &kp DOT         &kp UP          &kp FSLH
-                &kp LCTRL       &kp LALT        &kp RGUI        &lt_th 8 LANG2  &mo 2           &lt_th 3 SPACE                                  &kp RGUI        &mo 3           &kp LANG1       &kp LEFT        &kp DOWN        &kp RIGHT
+                &mo 3           &kp A           &kp S           &kp D           &kp F           &kp G                                           &kp H           &kp J           &kp K           &kp L           &kp BSLH        &kp RET
+                &kp LSHFT       &kp Z           &kp X           &kp C           &kp V           &kp B           &mkp MCLK       &kp C_PP        &kp N           &kp M           &kp COMMA       &kp DOT         &kp UP          &kp FSLH
+                &kp LCTRL       &kp LALT        &kp RGUI        &lt_th 4 LANG2  &mo 1           &lt_th 2 SPACE                                  &kp RGUI        &mo 2           &kp LANG1       &kp LEFT        &kp DOWN        &kp RIGHT
             >;
             sensor-bindings = <&rot_msc SCRL_UP SCRL_DOWN &rot_msc SCRL_RIGHT SCRL_LEFT>;
         };
 
-        win {
-            display-name = "win";   // Winモード
-            // Vial のレイヤ 5
-            bindings = <
-                &kp TAB    &kp Q      &kp W      &kp E      &kp R      &kp T                            &kp Y      &kp U      &kp I      &kp O      &kp P      &kp BSPC
-                &kp CAPS   &kp A      &kp S      &kp D      &kp F      &kp G                            &kp H      &kp J      &kp K      &kp L      &kp BSLH   &kp RET
-                &kp LSHFT  &kp Z      &kp X      &kp C      &kp V      &kp B      &to 0      &to 1      &kp N      &kp M      &kp COMMA  &kp DOT    &kp UP     &kp FSLH
-                &kp RGUI   &kp LALT   &kp ESC    &mo 8      &mo 2      &kp SPACE                        &kp F20    &mo 7      &kp RALT   &kp LEFT   &kp DOWN   &kp RIGHT
-            >;
-            sensor-bindings = <&rot_msc SCRL_LEFT SCRL_RIGHT &rot_msc SCRL_DOWN SCRL_UP>;
-        };
-
         suuji {
-            display-name = "suuji";   // すうじ・きごう
-            // Vial のレイヤ 1
+            display-name = "suuji";   // すうじ・きごう（元の Vial のレイヤ 1）
             bindings = <
                 &kp ESC     &kp N1      &kp N2      &kp N3      &kp N4      &kp N5                              &kp N6      &kp N7      &kp N8      &kp N9      &kp N0      &kp DEL
-                &m10        &none       &kp LC(M)   &kp BSPC    &kp SEMI    &kp MINUS                           &kp EQUAL   &kp SQT     &none       &kp LBKT    &kp RBKT    &none
-                &m11        &none       &none       &none       &none       &none       &kp C_MUTE  &mkp MCLK   &none       &none       &none       &none       &none       &none
+                &none       &none       &kp LC(M)   &kp BSPC    &kp SEMI    &kp MINUS                           &kp EQUAL   &kp SQT     &none       &kp LBKT    &kp RBKT    &none
+                &none       &none       &none       &none       &none       &none       &kp C_MUTE  &mkp MCLK   &none       &none       &none       &none       &none       &none
                 &none       &none       &none       &none       &none       &none                               &none       &none       &none       &none       &none       &none
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &rot_msc SCRL_DOWN SCRL_UP>;
         };
 
         fkey_bt {
-            display-name = "fkey_bt";   // Fキー・BT
-            // Vial のレイヤ 2
+            display-name = "fkey_bt";   // Fキー・BT（元の Vial のレイヤ 2）
             bindings = <
                 &none            &kp F1           &kp F2           &kp LA(E)        &kp F4           &kp F5                                             &kp F6           &kp F7           &kp F8           &kp F9           &kp F10          &hold_reset 0 0
                 &bt BT_SEL 0     &kp U            &kp I            &kp A            &none            &none                                              &none            &none            &none            &none            &none            &studio_unlock
@@ -141,21 +106,8 @@
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &rot_msc SCRL_DOWN SCRL_UP>;
         };
 
-        tenkey {
-            display-name = "tenkey";   // テンキー
-            // Vial のレイヤ 3
-            bindings = <
-                &none         &kp KP_N7     &kp KP_N8     &kp KP_N9     &none         &none                                     &none         &none         &none         &none         &none         &none
-                &bt BT_SEL 0  &kp KP_N4     &kp KP_N5     &kp KP_N6     &none         &none                                     &none         &none         &none         &none         &none         &none
-                &bt BT_SEL 1  &kp KP_N1     &kp KP_N2     &kp KP_N3     &none         &none         &kp C_MUTE    &mkp MCLK     &none         &none         &none         &none         &none         &none
-                &bt BT_SEL 2  &kp KP_N0     &kp KP_DOT    &none         &none         &none                                     &none         &none         &none         &none         &none         &none
-            >;
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &rot_msc SCRL_DOWN SCRL_UP>;
-        };
-
-        henshu {
-            display-name = "henshu";   // へんしゅう
-            // Vial のレイヤ 4
+        emacs {
+            display-name = "emacs";   // emacs（元の Vial のレイヤ 4）
             bindings = <
                 &none          &none          &none          &kp END        &none          &none                                        &none          &none          &none          &none          &kp UP         &m1
                 &none          &kp HOME       &kp DEL        &none          &kp RIGHT      &none                                        &kp BSPC       &kp F6         &kp F7         &kp F9         &kp F10        &none
@@ -165,33 +117,8 @@
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &rot_msc SCRL_DOWN SCRL_UP>;
         };
 
-        win_suuji {
-            display-name = "win_suuji";   // Winすうじ
-            // Vial のレイヤ 6
-            bindings = <
-                &kp ESC    &kp N1     &kp N2     &kp N3     &kp N4     &kp N5                           &kp N6     &kp N7     &kp N8     &kp N9     &kp N0     &kp DEL
-                &m10       &none      &none      &none      &kp SEMI   &kp MINUS                        &kp EQUAL  &kp SQT    &kp GRAVE  &kp LBKT   &kp RBKT   &none
-                &m11       &none      &none      &none      &none      &none      &to 0      &to 6      &none      &none      &none      &none      &none      &none
-                &none      &none      &none      &none      &none      &none                            &none      &none      &none      &none      &none      &none
-            >;
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &rot_msc SCRL_DOWN SCRL_UP>;
-        };
-
-        bt {
-            display-name = "bt";   // BT
-            // Vial のレイヤ 7
-            bindings = <
-                &none         &none         &none         &none         &none         &none                                     &none         &none         &none         &none         &none         &none
-                &bt BT_SEL 0  &none         &none         &none         &none         &none                                     &none         &none         &none         &none         &none         &none
-                &bt BT_SEL 1  &none         &none         &none         &none         &none         &kp C_MUTE    &mkp MCLK     &none         &none         &none         &none         &none         &none
-                &bt BT_SEL 2  &none         &none         &none         &none         &none                                     &none         &none         &none         &none         &none         &none
-            >;
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &rot_msc SCRL_DOWN SCRL_UP>;
-        };
-
         dentaku {
-            display-name = "dentaku";   // でんたく
-            // Vial のレイヤ 9
+            display-name = "dentaku";   // でんたく（元の Vial のレイヤ 9）
             bindings = <
                 &kp KP_N7        &kp KP_N8        &kp KP_N9        &kp EQUAL        &none            &none                                              &none            &none            &none            &none            &kp TAB          &kp BSPC
                 &kp KP_N4        &kp KP_N5        &kp KP_N6        &kp KP_MINUS     &kp KP_SLASH     &none                                              &none            &none            &none            &none            &none            &none
@@ -199,6 +126,14 @@
                 &kp KP_N0        &kp KP_DOT       &kp COMMA        &none            &none            &none                                              &none            &none            &none            &none            &none            &none
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &rot_msc SCRL_DOWN SCRL_UP>;
+        };
+
+        extra1 {
+            status = "reserved";   // よび1（ZMK Studio で使う予備）
+        };
+
+        extra2 {
+            status = "reserved";   // よび2（ZMK Studio で使う予備）
         };
     };
 };
