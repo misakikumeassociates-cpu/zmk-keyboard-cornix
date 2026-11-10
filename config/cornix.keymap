@@ -44,7 +44,8 @@
             tap-ms = <30>;
         };
 
-        // 1秒長押しで左を再起動（つながりが不安定なときの応急手当。短く押しても何も起きない）
+        // 1秒長押しで再起動（つながりが不安定なときの応急手当。短く押しても何も起きない）
+        // ZMK の reset は「押したキーがある側」を再起動する：左手のキー＝左、右手のキー＝右
         hold_reset: hold_reset {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
@@ -134,7 +135,7 @@
             bindings = <
                 &none            &kp F1           &kp F2           &kp LA(E)        &kp F4           &kp F5                                             &kp F6           &kp F7           &kp F8           &kp F9           &kp F10          &hold_reset 0 0
                 &bt BT_SEL 0     &kp U            &kp I            &kp A            &none            &none                                              &none            &none            &none            &none            &none            &studio_unlock
-                &bt BT_SEL 1     &none            &none            &none            &none            &none            &kp C_MUTE       &mkp MCLK        &none            &none            &none            &none            &none            &none
+                &bt BT_SEL 1     &hold_reset 0 0  &none            &none            &none            &none            &kp C_MUTE       &mkp MCLK        &none            &none            &none            &none            &none            &none
                 &bt BT_SEL 2     &none            &none            &none            &none            &none                                              &none            &none            &none            &none            &none            &none
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &rot_msc SCRL_DOWN SCRL_UP>;
