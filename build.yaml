@@ -39,6 +39,13 @@ include:
     artifact-name: shiro_left_central_usb
   # 右は上の shiro_right をそのまま使う（ドングルあり・なしで同じ）
 
+  # ---- 診断：同期の待ちゼロ（latency 0）。右が休んだあとの1打目の遅れが待ちのせいかを確かめる（2026-11-10）----
+  #   右の電池は増える（zhenlonghe 版の説明で約 0.7mA）。効いたら 1〜2 の中間も試す
+  - board: cornix_left
+    shield: cornix_indicator
+    cmake-args: -DCONFIG_ZMK_POINTING=y -DCONFIG_ZMK_SPLIT_BLE_PREF_INT=6 -DCONFIG_ZMK_SPLIT_BLE_PREF_LATENCY=0 -DCONFIG_ZMK_SLEEP=n
+    artifact-name: shiro_left_central_usb_lat0
+
   # ---- 控え：LED と zhenlonghe さん独自の立ち直りの仕組みを入れない版 ----
   #   cornix_indicator を外すと、LED・切断からの立ち直り・フリーズ時の再起動（独自の C のコード約1,200行）が入らない。
   #   残るのは基板の定義と無線の設定（時計の補正・+8dBm・1M PHY・接続間隔）だけ。独自のコードが怪しいときに入れ替える
