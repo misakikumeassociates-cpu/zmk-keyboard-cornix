@@ -29,29 +29,30 @@ include:
     cmake-args: -DCONFIG_ZMK_SLEEP=n
     artifact-name: shiro_right
 
-  # ---- ドングルなし（XIAO が届く前に ZMK だけ試すとき：左は今と同じ USB 有線）----
-  #   zhenlonghe 版は電池のために左右の接続間隔を 11.25ms（PREF_INT=9・LATENCY=3）に伸ばしている。
-  #   しろ の左は USB 給電なので、右手の遅れが小さい 7.5ms（規格の下限）に戻す。
-  #   (5+1)×7.5ms＝45ms ごとに必ず同期する作りは zhenlonghe 版と同じ（ドングルの設定と同じ値）
+  # ---- ドングルなし（段階1・今使っている形：左は USB 有線の central、右は左へ無線）----
+  #   接続間隔 7.5ms（規格の下限。zhenlonghe 版は電池のため 11.25ms に伸ばしている）
+  #   latency 0：右が休んだあとの1打目が待たされて「ない」→「あに」になるのを防ぐ（11/10〜11 の測定で決定。右の電池は増える）
+  #   深い眠りなし・ZMK Studio あり（Studio は central＝左だけに入れる。snippet と CONFIG_ZMK_STUDIO の両方が要る）
+  - board: cornix_left
+    shield: cornix_indicator
+    snippet: studio-rpc-usb-uart
+    cmake-args: -DCONFIG_ZMK_POINTING=y -DCONFIG_ZMK_SPLIT_BLE_PREF_INT=6 -DCONFIG_ZMK_SPLIT_BLE_PREF_LATENCY=0 -DCONFIG_ZMK_SLEEP=n -DCONFIG_ZMK_STUDIO=y
+    artifact-name: shiro_left_studio_lat0
+  # 右は上の shiro_right をそのまま使う（ドングルあり・なしで同じ）
+
+  # ---- 比べる用：latency 5（11/10 に最初に入れた形・Studio なし）----
   - board: cornix_left
     shield: cornix_indicator
     cmake-args: -DCONFIG_ZMK_POINTING=y -DCONFIG_ZMK_SPLIT_BLE_PREF_INT=6 -DCONFIG_ZMK_SPLIT_BLE_PREF_LATENCY=5 -DCONFIG_ZMK_SLEEP=n
-    artifact-name: shiro_left_central_usb
-  # 右は上の shiro_right をそのまま使う（ドングルあり・なしで同じ）
-
-  # ---- 診断：同期の待ちゼロ（latency 0）。右が休んだあとの1打目の遅れが待ちのせいかを確かめる（2026-11-10）----
-  #   右の電池は増える（zhenlonghe 版の説明で約 0.7mA）。効いたら 1〜2 の中間も試す
-  - board: cornix_left
-    shield: cornix_indicator
-    cmake-args: -DCONFIG_ZMK_POINTING=y -DCONFIG_ZMK_SPLIT_BLE_PREF_INT=6 -DCONFIG_ZMK_SPLIT_BLE_PREF_LATENCY=0 -DCONFIG_ZMK_SLEEP=n
-    artifact-name: shiro_left_central_usb_lat0
+    artifact-name: shiro_left_lat5
 
   # ---- 控え：LED と zhenlonghe さん独自の立ち直りの仕組みを入れない版 ----
   #   cornix_indicator を外すと、LED・切断からの立ち直り・フリーズ時の再起動（独自の C のコード約1,200行）が入らない。
   #   残るのは基板の定義と無線の設定（時計の補正・+8dBm・1M PHY・接続間隔）だけ。独自のコードが怪しいときに入れ替える
   - board: cornix_left
-    cmake-args: -DCONFIG_ZMK_POINTING=y -DCONFIG_ZMK_SPLIT_BLE_PREF_INT=6 -DCONFIG_ZMK_SPLIT_BLE_PREF_LATENCY=5 -DCONFIG_ZMK_SLEEP=n
-    artifact-name: shiro_left_central_usb_plain
+    snippet: studio-rpc-usb-uart
+    cmake-args: -DCONFIG_ZMK_POINTING=y -DCONFIG_ZMK_SPLIT_BLE_PREF_INT=6 -DCONFIG_ZMK_SPLIT_BLE_PREF_LATENCY=0 -DCONFIG_ZMK_SLEEP=n -DCONFIG_ZMK_STUDIO=y
+    artifact-name: shiro_left_studio_lat0_plain
 
   - board: cornix_right
     cmake-args: -DCONFIG_ZMK_SLEEP=n
