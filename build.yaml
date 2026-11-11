@@ -38,6 +38,13 @@ include:
     snippet: studio-rpc-usb-uart
     cmake-args: -DCONFIG_ZMK_POINTING=y -DCONFIG_ZMK_SPLIT_BLE_PREF_INT=6 -DCONFIG_ZMK_SPLIT_BLE_PREF_LATENCY=0 -DCONFIG_ZMK_SLEEP=n -DCONFIG_ZMK_STUDIO=y
     artifact-name: shiro_left_studio_lat0
+
+  # ---- 電池表示用：上の shiro_left_studio_lat0 に USB の 2 つ目の HID（ベンダー定義）を足す。Windows が右の電池を読む ----
+  - board: cornix_left
+    shield: cornix_indicator
+    snippet: studio-rpc-usb-uart
+    cmake-args: -DCONFIG_ZMK_POINTING=y -DCONFIG_ZMK_SPLIT_BLE_PREF_INT=6 -DCONFIG_ZMK_SPLIT_BLE_PREF_LATENCY=0 -DCONFIG_ZMK_SLEEP=n -DCONFIG_ZMK_STUDIO=y -DCONFIG_CORNIX_BATTERY_HID=y -DCONFIG_USB_HID_DEVICE_COUNT=2
+    artifact-name: shiro_left_studio_lat0_bat
   # 右は上の shiro_right をそのまま使う（ドングルあり・なしで同じ）
 
   # ---- 比べる用：latency 5（11/10 に最初に入れた形・Studio なし）----

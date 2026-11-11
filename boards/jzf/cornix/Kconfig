@@ -2,3 +2,8 @@ config BOARD_CORNIX_CHARGER
     bool "Enable battery charger"
     default y
     depends on ( BOARD_CORNIX_LEFT || BOARD_CORNIX_RIGHT || BOARD_CORNIX_PH_LEFT )
+
+config CORNIX_BATTERY_HID
+    bool "Expose battery status over a second (vendor) USB HID interface"
+    default n
+    depends on ZMK_SPLIT_ROLE_CENTRAL && ZMK_USB && ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING

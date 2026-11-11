@@ -16,5 +16,9 @@ zephyr_library_sources_ifdef(
 # the right half gets ~2 listening chances before the switch. Missing both
 # desyncs the link and drops the split until supervision timeout + reconnect,
 # which showed up as occasional right-half disconnects.
+zephyr_library_sources_ifdef(
+  CONFIG_CORNIX_BATTERY_HID
+  ../../shields/cornix_indicator/cornix_battery_hid.c
+)
 zephyr_library_include_directories(${ZEPHYR_BASE}/drivers)
 zephyr_library_include_directories(${APPLICATION_SOURCE_DIR}/include)
